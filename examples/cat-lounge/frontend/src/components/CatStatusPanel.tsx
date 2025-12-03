@@ -163,16 +163,18 @@ export function CatStatusPanel({ onQuickAction, className }: CatStatusPanelProps
               Interactive widget
             </p>
             <div className="mt-2">
-              <button
-                type="button"
-                onClick={() => onQuickAction && onQuickAction("Show me an interactive widget to nudge and adore the cat")}
-                className={clsx(
-                  "w-full rounded-2xl border px-3 py-2 text-left shadow-sm transition-colors",
-                  "border-purple-200 bg-purple-50/80 text-purple-800 hover:border-purple-300 hover:bg-purple-100/80 dark:border-purple-700 dark:bg-purple-900/40 dark:text-purple-200 dark:hover:border-purple-600 dark:hover:bg-purple-900/60",
-                )}
-              >
-                <div className="text-sm font-semibold">Adore or nudge {cat.name}</div>
-              </button>
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => onQuickAction && onQuickAction("Show me an interactive widget to nudge and adore the cat")}
+                  className={clsx(
+                    "max-w-xs w-full rounded-xl px-4 py-2 text-center font-semibold transition-colors duration-200",
+                    "bg-purple-100 text-purple-800 border border-purple-200 hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-300 focus:ring-offset-2 dark:bg-purple-900 dark:text-purple-100 dark:border-purple-700 dark:hover:bg-purple-800",
+                  )}
+                >
+                  Adore or nudge {cat.name}
+                </button>
+              </div>
             </div>
           </div>
         </div>
