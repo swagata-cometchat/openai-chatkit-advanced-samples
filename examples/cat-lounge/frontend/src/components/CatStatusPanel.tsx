@@ -77,7 +77,7 @@ export function CatStatusPanel({ onQuickAction, className }: CatStatusPanelProps
   return (
     <div
       className={clsx(
-        "relative flex h-full w-full flex-col items-center justify-between gap-8 p-8 text-center",
+        "relative flex h-full w-full flex-col items-center gap-6 p-8 text-center overflow-y-auto",
         className,
       )}
     >
@@ -122,7 +122,7 @@ export function CatStatusPanel({ onQuickAction, className }: CatStatusPanelProps
         ) : null}
       </div>
 
-      <div className="w-full space-y-5">
+      <div className="w-full space-y-4">
         <div className="space-y-3">
           {STATUS_CONFIG.map((status) => (
             <StatusMeter
@@ -133,11 +133,11 @@ export function CatStatusPanel({ onQuickAction, className }: CatStatusPanelProps
           ))}
         </div>
 
-        <div className="mt-auto w-full border-t border-slate-200/80 pt-4 text-left dark:border-slate-800/60">
+        <div className="w-full border-t border-slate-200/80 pt-4 text-left dark:border-slate-800/60">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Quick actions
           </p>
-          <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:gap-3">
             {QUICK_ACTIONS.map((action) => {
               return (
                 <button
@@ -145,7 +145,7 @@ export function CatStatusPanel({ onQuickAction, className }: CatStatusPanelProps
                   type="button"
                   onClick={() => handleQuickAction(action)}
                   className={clsx(
-                    "flex-1 rounded-2xl border px-4 py-3 text-left shadow-sm transition-colors",
+                    "flex-1 rounded-2xl border px-3 py-2 text-left shadow-sm transition-colors",
                     "border-slate-200 bg-white/80 text-slate-800 hover:border-slate-300 hover:bg-white dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100 dark:hover:border-slate-600",
                   )}
                 >
@@ -156,6 +156,27 @@ export function CatStatusPanel({ onQuickAction, className }: CatStatusPanelProps
                 </button>
               );
             })}
+          </div>
+          
+          <div className="mt-3 border-t border-slate-200/60 pt-3 dark:border-slate-700/60">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              Interactive widget
+            </p>
+            <div className="mt-2">
+              <button
+                type="button"
+                onClick={() => onQuickAction && onQuickAction("Show me an interactive widget to nudge and adore the cat")}
+                className={clsx(
+                  "w-full rounded-2xl border px-3 py-2 text-left shadow-sm transition-colors",
+                  "border-purple-200 bg-purple-50/80 text-purple-800 hover:border-purple-300 hover:bg-purple-100/80 dark:border-purple-700 dark:bg-purple-900/40 dark:text-purple-200 dark:hover:border-purple-600 dark:hover:bg-purple-900/60",
+                )}
+              >
+                <div className="text-sm font-semibold">Show Interactive Widget</div>
+                <div className="text-xs text-purple-600 dark:text-purple-300">
+                  Get buttons to nudge and adore {cat.name}
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
