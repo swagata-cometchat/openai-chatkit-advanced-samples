@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "name": "Nudge Cat Widget",
+  "template": "{\"type\":\"Card\",\"size\":\"sm\",\"children\":[{\"type\":\"Image\",\"src\":{{ (image) | tojson }},\"alt\":\"Close-up of a tabby cat\",\"flush\":true},{\"type\":\"Col\",\"gap\":2,\"children\":[{\"type\":\"Title\",\"value\":{{ (title) | tojson }},\"size\":\"md\"},{\"type\":\"Text\",\"value\":{{ (prompt) | tojson }},\"color\":\"secondary\"},{\"type\":\"Row\",\"gap\":2,\"children\":[{\"type\":\"Button\",\"label\":\"Nudge\",\"variant\":\"outline\",\"onClickAction\":{\"type\":\"cat.nudge\"}},{\"type\":\"Button\",\"label\":\"Adore\",\"style\":\"primary\",\"onClickAction\":{\"type\":\"cat.adore\"}}]}]}]}",
+  "jsonSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "image": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "prompt": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "image",
+      "title", 
+      "prompt"
+    ],
+    "additionalProperties": false
+  }
+}

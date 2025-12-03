@@ -35,6 +35,7 @@ from .widgets.name_suggestions_widget import (
     CatNameSuggestion,
     build_name_suggestions_widget,
 )
+from .widgets.profile_card_widget import build_nudge_cat_widget
 
 logging.basicConfig(level=logging.INFO)
 
@@ -62,6 +63,24 @@ class CatAssistantServer(ChatKitServer[dict[str, Any]]):
             async for event in self._handle_select_name_action(
                 thread,
                 action.payload,
+                sender,
+                context,
+            ):
+                yield event
+            return
+
+        if action.type == "cat.nudge":
+            async for event in self._handle_nudge_action(
+                thread,
+                sender,
+                context,
+            ):
+                yield event
+            return
+
+        if action.type == "cat.adore":
+            async for event in self._handle_adore_action(
+                thread,
                 sender,
                 context,
             ):
@@ -179,12 +198,88 @@ class CatAssistantServer(ChatKitServer[dict[str, Any]]):
             created_at=datetime.now(),
             content=[
                 AssistantMessageContent(
-                    text=f"Love that choice. {state.name}’s profile card is now ready. Would you like to check it out?"
+                    text=f"Love that choice. {state.name}'s profile card is now ready. Would you like to check it out?"
                 )
             ],
         )
         # No need to explicitly save the assistant message item in the store.
         # It will be automatically saved when the agent response is streamed.
+        yield ThreadItemDoneEvent(item=message_item)
+
+    async def _handle_nudge_action(
+        self,
+        thread: ThreadMetadata,
+        sender: WidgetItem | None,
+        context: dict[str, Any],
+    ) -> AsyncIterator[ThreadStreamEvent]:
+        """Handle nudge action - gently pokes the cat."""
+        if not sender:
+            return
+
+        # Update cat state (slight happiness increase)
+        state = await self.cat_store.mutate(thread.id, lambda s: s.nudge())
+        
+        # Add hidden context for agent awareness
+        await self.store.add_thread_item(
+            thread.id,
+            HiddenContextItem(
+                id=self.store.generate_item_id("message", thread, context),
+                thread_id=thread.id,
+                created_at=datetime.now(),
+                content=f"<CAT_NUDGED>{state.name} was gently nudged</CAT_NUDGED>",
+            ),
+            context=context,
+        )
+
+        # Create response message
+        message_item = AssistantMessageItem(
+            id=self.store.generate_item_id("message", thread, context),
+            thread_id=thread.id,
+            created_at=datetime.now(),
+            content=[
+                AssistantMessageContent(
+                    text=f"You gently nudged {state.name}! They seem a bit more alert now. *purr*"
+                )
+            ],
+        )
+        yield ThreadItemDoneEvent(item=message_item)
+
+    async def _handle_adore_action(
+        self,
+        thread: ThreadMetadata,
+        sender: WidgetItem | None,
+        context: dict[str, Any],
+    ) -> AsyncIterator[ThreadStreamEvent]:
+        """Handle adore action - gives the cat lots of love."""
+        if not sender:
+            return
+
+        # Update cat state (bigger happiness increase)
+        state = await self.cat_store.mutate(thread.id, lambda s: s.adore())
+        
+        # Add hidden context for agent awareness
+        await self.store.add_thread_item(
+            thread.id,
+            HiddenContextItem(
+                id=self.store.generate_item_id("message", thread, context),
+                thread_id=thread.id,
+                created_at=datetime.now(),
+                content=f"<CAT_ADORED>{state.name} was showered with affection</CAT_ADORED>",
+            ),
+            context=context,
+        )
+
+        # Create response message
+        message_item = AssistantMessageItem(
+            id=self.store.generate_item_id("message", thread, context),
+            thread_id=thread.id,
+            created_at=datetime.now(),
+            content=[
+                AssistantMessageContent(
+                    text=f"You showered {state.name} with love! They're absolutely glowing with happiness! 😻"
+                )
+            ],
+        )
         yield ThreadItemDoneEvent(item=message_item)
 
 

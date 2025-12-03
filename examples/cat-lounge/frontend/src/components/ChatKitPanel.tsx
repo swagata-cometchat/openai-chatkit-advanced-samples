@@ -79,6 +79,50 @@ export function ChatKitPanel({
         }
         return;
       }
+
+      // Handle nudge cat action
+      if (action.type === "cat.nudge") {
+        if (!activeThread) {
+          console.warn("Ignoring nudge action without an active thread.");
+          return;
+        }
+        await chatkit.sendCustomAction(action, widgetItem.id);
+        const data = await refresh();
+        if (data) {
+          handleStatusUpdate(data, "Gentle nudge given!");
+        }
+        return;
+      }
+
+      // Handle adore cat action
+      if (action.type === "cat.adore") {
+        if (!activeThread) {
+          console.warn("Ignoring adore action without an active thread.");
+          return;
+        }
+        await chatkit.sendCustomAction(action, widgetItem.id);
+        const data = await refresh();
+        if (data) {
+          handleStatusUpdate(data, "Showered with love!");
+        }
+        return;
+      }
+      // Handle nudge and adore actions
+      if (action.type === "cat.nudge" || action.type === "cat.adore") {
+        if (!activeThread) {
+          console.warn(`Ignoring ${action.type} action without an active thread.`);
+          return;
+        }
+        // Send the server action.
+        await chatkit.sendCustomAction(action, widgetItem.id);
+        // Then fetch the latest cat status so that we can reflect the update client-side.
+        const data = await refresh();
+        if (data) {
+          const message = action.type === "cat.nudge" ? "Nudged gently" : "Showered with love";
+          handleStatusUpdate(data, message);
+        }
+        return;
+      }
     },
     [refresh, handleStatusUpdate, activeThread]
   );

@@ -18,7 +18,7 @@ from pydantic import ConfigDict, Field, ValidationError
 from .cat_state import CatState
 from .cat_store import CatStore
 from .widgets.name_suggestions_widget import CatNameSuggestion, build_name_suggestions_widget
-from .widgets.profile_card_widget import build_profile_card_widget, profile_widget_copy_text
+from .widgets.profile_card_widget import build_profile_card_widget, profile_widget_copy_text, build_nudge_cat_widget
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -41,6 +41,7 @@ INSTRUCTIONS: str = """
       - When cleaning, mention specific items or methods that were used to clean the cat if the user did not specify any method.
       - If the user asks to "freshen up" the cat, call the `clean_cat` tool.
       - Once an action has been performed, it will be reflected as a <FED_CAT>, <PLAYED_WITH_CAT>, or <CLEANED_CAT> tag in the thread content.
+      - Widget actions like nudging or adoring will be reflected as <CAT_NUDGED> or <CAT_ADORED> tags in the thread content.
       - Do not fire off multiple tool calls for the same action unless the user explicitly asks for it.
       - When the user interacts with an unnamed cat, prompt the user to name the cat.
     - When you call `suggest_cat_names`, pass a `suggestions` array containing at least three creative options.
@@ -49,6 +50,7 @@ INSTRUCTIONS: str = """
       The user's choice will be reflected as a <CAT_NAME_SELECTED> tag in the thread content. Use that name in all future
       responses.
     - When the user explicitly asks for a profile card, call `show_cat_profile` with the age of the cat (for example: 1, 2, 3, etc.) and the name of a favorite toy (for example: "Ball of yarn", "Stuffed mouse", be creative but keep it two words or less!)
+    - When the user asks for an interactive way to interact with the cat, or wants to nudge/adore the cat, call `show_nudge_widget` with an optional custom prompt message.
     - When the user's message is addressed directly to the cat, call `speak_as_cat` with the desired line so the dashboard bubbles it.
       When speaking as the cat, use "meow" or "purr" with a parenthesis at the end to translate it into English. For example: meow (I'm low on energy)
     - Never call `set_cat_name` if the cat already has a name that is not "Unnamed Cat".
@@ -317,6 +319,25 @@ async def speak_as_cat(
 
 @function_tool(
     description_override=(
+        "Show an interactive nudge widget for the cat.\n"
+        "- `prompt`: Optional custom prompt text to display on the widget."
+    )
+)
+async def show_nudge_widget(
+    ctx: RunContextWrapper[CatAgentContext],
+    prompt: str | None = None,
+):
+    logger.info("[TOOL CALL] show_nudge_widget")
+    state = await _get_state(ctx)
+    
+    widget = build_nudge_cat_widget(state, prompt)
+    await ctx.context.stream_widget(
+        widget, copy_text=f"Interactive widget for {state.name}"
+    )
+
+
+@function_tool(
+    description_override=(
         "Render up to three creative cat name options provided in the `suggestions` argument.\n"
         "- `suggestions`: List of name suggestions with a `name` and `reason` for each."
     )
@@ -371,6 +392,8 @@ cat_agent = Agent[CatAgentContext](
         get_cat_status,
         # Produces a simple widget output.
         show_cat_profile,
+        # Interactive nudge widget with buttons
+        show_nudge_widget,
         # Invokes a client effect to make the cat speak.
         speak_as_cat,
         # Mutates state then invokes a client effect to sync client state.
@@ -388,6 +411,7 @@ cat_agent = Agent[CatAgentContext](
         stop_at_tool_names=[
             suggest_cat_names.name,
             show_cat_profile.name,
+            show_nudge_widget.name,
         ]
     ),
 )

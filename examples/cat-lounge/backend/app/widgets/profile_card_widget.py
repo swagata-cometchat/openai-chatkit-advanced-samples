@@ -10,6 +10,7 @@ from chatkit.widgets import WidgetRoot, WidgetTemplate
 from ..cat_state import CatState
 
 cat_profile_widget_template = WidgetTemplate.from_file("cat_profile.widget")
+cat_nudge_widget_template = WidgetTemplate.from_file("cat_nudge.widget")
 
 
 def _format_age_label(age: int) -> str:
@@ -56,3 +57,15 @@ def build_profile_card_widget(state: CatState, favorite_toy: str | None = None) 
 
 def profile_widget_copy_text(state: CatState) -> str:
     return f"{state.name}, age {state.age}, is a {state.color_pattern} cat."
+
+
+def build_nudge_cat_widget(state: CatState, prompt: str | None = None) -> WidgetRoot:
+    """Build a nudge cat widget with interactive buttons."""
+    default_prompt = f"Give {state.name} some attention!"
+    return cat_nudge_widget_template.build(
+        data={
+            "image": _image_src(state),
+            "title": f"Interact with {state.name}",
+            "prompt": prompt or default_prompt,
+        }
+    )

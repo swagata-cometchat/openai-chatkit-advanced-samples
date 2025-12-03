@@ -53,6 +53,21 @@ class CatState:
             self.happiness = _clamp(self.happiness - 1)
         self.touch()
 
+    def nudge(self, boost: int = 1) -> None:
+        """Gently nudge the cat for a small happiness boost."""
+        self.happiness = _clamp(self.happiness + boost)
+        # Small chance to slightly increase energy from stimulation
+        if choice([True, False, False]):
+            self.energy = _clamp(self.energy + 1)
+        self.touch()
+
+    def adore(self, boost: int = 3) -> None:
+        """Show lots of love to the cat for a bigger happiness boost."""
+        self.happiness = _clamp(self.happiness + boost)
+        # Being adored also gives a bit of energy from excitement
+        self.energy = _clamp(self.energy + 1)
+        self.touch()
+
     def rename(self, value: str) -> None:
         print(f"Renaming cat to {value}")
         self.name = value
