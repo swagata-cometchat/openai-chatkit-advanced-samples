@@ -171,10 +171,7 @@ export function CatStatusPanel({ onQuickAction, className }: CatStatusPanelProps
                   "border-purple-200 bg-purple-50/80 text-purple-800 hover:border-purple-300 hover:bg-purple-100/80 dark:border-purple-700 dark:bg-purple-900/40 dark:text-purple-200 dark:hover:border-purple-600 dark:hover:bg-purple-900/60",
                 )}
               >
-                <div className="text-sm font-semibold">Show Interactive Widget</div>
-                <div className="text-xs text-purple-600 dark:text-purple-300">
-                  Get buttons to nudge and adore {cat.name}
-                </div>
+                <div className="text-sm font-semibold">Adore or nudge {cat.name}</div>
               </button>
             </div>
           </div>
