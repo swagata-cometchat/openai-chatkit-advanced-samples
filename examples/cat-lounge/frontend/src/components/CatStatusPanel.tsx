@@ -157,25 +157,17 @@ export function CatStatusPanel({ onQuickAction, className }: CatStatusPanelProps
               );
             })}
           </div>
-          
-          <div className="mt-3 border-t border-slate-200/60 pt-3 dark:border-slate-700/60">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-              Interactive widget
-            </p>
-            <div className="mt-2">
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  onClick={() => onQuickAction && onQuickAction("Show me an interactive widget to nudge and adore the cat")}
-                  className={clsx(
-                    "max-w-xs w-full rounded-xl px-4 py-2 text-center font-semibold transition-colors duration-200",
-                    "bg-purple-100 text-purple-800 border border-purple-200 hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-300 focus:ring-offset-2 dark:bg-purple-900 dark:text-purple-100 dark:border-purple-700 dark:hover:bg-purple-800",
-                  )}
-                >
-                  Adore or nudge {cat.name}
-                </button>
-              </div>
-            </div>
+          <div className="mt-4 flex justify-center">
+            <button
+              type="button"
+              onClick={() => onQuickAction && onQuickAction("Show me an interactive widget to nudge and adore the cat")}
+              className={clsx(
+                "max-w-xs w-full rounded-xl px-4 py-2 text-center font-semibold transition-colors duration-200",
+                "bg-purple-100 text-purple-800 border border-purple-200 hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-300 focus:ring-offset-2 dark:bg-purple-900 dark:text-purple-100 dark:border-purple-700 dark:hover:bg-purple-800",
+              )}
+            >
+              Adore or nudge {cat.name}
+            </button>
           </div>
         </div>
       </div>
